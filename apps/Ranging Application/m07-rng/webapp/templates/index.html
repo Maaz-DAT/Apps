@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>RNG - Ranging Application</title>
+  <title>RNG — Ranging Application</title>
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <header>
-    <h1>RNG <span class="sub">ranging / A-scope </span></h1>
+    <h1>RNG <span class="sub">— ranging / A-scope console (M-07)</span></h1>
+    <div class="status-bar">
+      <span id="status-input">input: -</span>
+      <span id="status-processed">processed: 0</span>
+      <span id="status-dropped">dropped: 0</span>
+      <span id="status-gen" class="pill off">generator: off</span>
+    </div>
   </header>
 
   <main>
