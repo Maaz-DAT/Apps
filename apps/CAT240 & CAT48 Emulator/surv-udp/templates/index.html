@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>SURV Application</title>
+  <link rel="stylesheet" href="/static/style.css"/>
+</head>
+<body>
+  <div class="topbar">SURV Application <span>Surveillance PPI · CAT 240 video · CAT 048 tracks</span></div>
+
+  <div class="main">
+    <div class="ppi-area" id="ppi-area">
+      <div class="ppi-stage" id="ppi-stage">
+        <canvas id="ppi" width="720" height="720"></canvas>
+        <canvas id="overlay" width="720" height="720"></canvas>
+        <canvas id="hud" width="720" height="720"></canvas>
+      </div>
+      <div class="cursor-box" id="cursor-box">R — · Az —</div>
+    </div>
+
+    <aside class="side">
+      <div class="sec">
+        <h3>Scan</h3>
+        <div class="btns">
+          <button id="btn-scan" class="primary">Next scan</button>
+          <button id="btn-run">Run</button>
+          <button id="btn-reset">Reset</button>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label>Speed</label>
+          <select id="sel-speed">
+            <option value="2000">0.5×</option>
+            <option value="1000" selected>1×</option>
+            <option value="500">2×</option>
+            <option value="250">4×</option>
+          </select>
+        </div>
+        <div class="row">
+          <label>View</label>
+          <div class="btns" style="flex:1; margin:0">
+            <button id="btn-zoom-in">+</button>
+            <button id="btn-zoom-out">−</button>
+            <button id="btn-zoom-fit">Fit</button>
+          </div>
+        </div>
+        <div class="row chk"><label><input type="checkbox" id="chk-rings" checked/> Range rings</label></div>
+        <div class="row chk"><label><input type="checkbox" id="chk-trails" checked/> Track trails</label></div>
+        <div class="row chk"><label><input type="checkbox" id="chk-labels" checked/> Labels</label></div>
+      </div>
+
+      <div class="sec">
+        <h3>Video</h3>
+        <div class="row">
+          <label>Gain</label>
+          <input type="range" id="gain" min="10" max="400" value="100"/>
+          <span class="v" id="gain-val">100%</span>
+        </div>
+        <div class="row">
+          <label>Clutter thr</label>
+          <input type="range" id="thr" min="0" max="100" value="0"/>
+          <span class="v" id="thr-val">0%</span>
+        </div>
+        <div class="row">
+          <label>Persistence</label>
+          <input type="range" id="decay" min="50" max="99" value="88"/>
+          <span class="v" id="decay-val">0.88</span>
+        </div>
+        <div class="row chk">
+          <label><input type="checkbox" id="use-codec" checked/> Encode→decode path</label>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h3>Plots</h3>
+        <div class="row">
+          <label>Fade (scans)</label>
+          <input type="range" id="fade" min="1" max="30" value="8"/>
+          <span class="v" id="fade-val">8</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <h3>Geometry</h3>
+        <div class="row"><label>Azimuths</label><input type="number" id="n-az" value="180" min="36" max="720"/></div>
+        <div class="row"><label>Range cells</label><input type="number" id="n-range" value="512" min="128" max="2048"/></div>
+        <div class="row"><label>Max range km</label><input type="number" id="max-range" value="100" min="20" max="400"/></div>
+        <div class="btns"><button id="btn-apply-cfg">Apply geometry</button></div>
+      </div>
+
+      <div class="sec">
+        <h3>UDP transmission</h3>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:6px">
+          CAT 240 video and CAT 048 tracks on separate ports.
+          Point SPx / RadarView-240 at these addresses.
+        </p>
+        <div class="row"><label>Host</label><input type="text" id="udp-host" value="127.0.0.1"/></div>
+        <div class="row"><label>CAT 240 port</label><input type="number" id="udp-port-240" value="8600" min="1024" max="65535"/></div>
+        <div class="row"><label>CAT 048 port</label><input type="number" id="udp-port-048" value="8601" min="1024" max="65535"/></div>
+        <div class="row chk"><label><input type="checkbox" id="udp-en-240"/> Transmit CAT 240 (video)</label></div>
+        <div class="row chk"><label><input type="checkbox" id="udp-en-048"/> Transmit CAT 048 (tracks)</label></div>
+        <div class="btns"><button id="btn-udp-apply">Apply UDP settings</button></div>
+        <div class="udp-stats" id="udp-stats">TX off</div>
+      </div>
+
+      <div class="sec">
+        <h3>Selected plot</h3>
+        <div id="detail-panel" class="detail"><p class="muted">Click a plot on the PPI</p></div>
+      </div>
+
+      <div class="sec" style="flex:1">
+        <h3>Tracks <span id="n-plots-label">0</span></h3>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Trk</th><th>R km</th><th>Az°</th><th>A</th><th>FL</th><th>Age</th></tr></thead>
+            <tbody id="plot-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="statusbar">
+    <span id="st-scan">Scan #0</span>
+    <span id="st-cells">—</span>
+    <span id="st-udp">UDP off</span>
+    <span id="st-drops">Drops: 0</span>
+    <span id="st-fps">—</span>
+    <span id="st-elapsed" style="margin-left:auto">—</span>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

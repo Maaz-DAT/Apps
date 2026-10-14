@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>RNG - Ranging Application</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <h1>RNG <span class="sub">ranging / A-scope </span></h1>
+  </header>
+
+  <main>
+    <section class="panel controls">
+      <h2>Waveform</h2>
+      <label>Type
+        <select id="waveform_kind">
+          <option value="chirp">Linear FM chirp</option>
+          <option value="simple">Simple pulse (no compression)</option>
+        </select>
+      </label>
+      <label>Bandwidth (MHz) <input id="bandwidth_hz" type="number" step="1" value="20" /></label>
+      <label>Duration (µs) <input id="duration_s" type="number" step="0.1" value="2" /></label>
+      <label>Sample rate (MHz) <input id="sample_rate_hz" type="number" step="1" value="50" /></label>
+      <label>Window length (samples) <input id="n_samples" type="number" step="256" value="8192" /></label>
+      <label>SNR (dB) <input id="snr_db" type="number" step="1" value="15" /></label>
+      <label>Generator rate (Hz) <input id="rate_hz" type="number" step="0.5" value="5" /></label>
+
+      <h2>CFAR detector</h2>
+      <label>Type
+        <select id="cfar_kind">
+          <option value="ca">CA-CFAR (cell-averaging)</option>
+          <option value="os">OS-CFAR (ordered-statistic)</option>
+        </select>
+      </label>
+      <label>Guard cells <input id="guard" type="number" step="1" value="2" /></label>
+      <label>Training cells <input id="train" type="number" step="1" value="12" /></label>
+      <label>Pfa <input id="pfa" type="number" step="0.0001" value="0.001" /></label>
+      <label>OS rank fraction <input id="k_rank" type="number" step="0.05" value="0.75" min="0" max="1" /></label>
+
+      <h2>Target scenario</h2>
+      <div id="targets-list"></div>
+      <button id="add-target">+ add target</button>
+
+      <div class="actions">
+        <button id="apply">Apply config</button>
+        <button id="gen-toggle" class="primary">Start generator</button>
+      </div>
+    </section>
+
+    <section class="panel display">
+      <h2>A-scope</h2>
+      <canvas id="ascope"></canvas>
+      <div class="legend">
+        <span class="swatch profile"></span> amplitude (dB)
+        <span class="swatch threshold"></span> CFAR threshold (dB)
+        <span class="swatch detection"></span> detection
+      </div>
+
+      <h2>Detection table</h2>
+      <table id="det-table">
+        <thead>
+          <tr><th>Range (m)</th><th>Amplitude (dB)</th><th>Range rate (m/s)</th><th>t (ns)</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
